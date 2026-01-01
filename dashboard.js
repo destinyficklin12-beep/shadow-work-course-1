@@ -78,13 +78,13 @@ auth.onAuthStateChanged(async (user) => {
     } else {
         window.location.href = 'auth.html';
     }
-});
+}
 
 // Sign out
 document.getElementById('signOutBtn').addEventListener('click', async () => {
     await auth.signOut();
     window.location.href = 'index.html';
-});
+}
 
 // Load user progress
 async function loadProgress() {
@@ -109,7 +109,7 @@ async function saveProgress() {
         await db.collection('userProgress').doc(currentUser.uid).set({
             completedModules: completedModules,
             lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        }
     } catch (error) {
         console.error('Error saving progress:', error);
     }
@@ -207,7 +207,7 @@ function displayModules() {
         `;
         
         container.appendChild(moduleCard);
-    });
+    }
 }
 
 // Update progress bar
