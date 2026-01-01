@@ -248,22 +248,23 @@ function checkForCertificate() {
                 You've completed all 8 modules of the Shadow Work Course!
             </p>
             <a href="certificate.html" style="
-                display: inline-block;
-                padding: 15px 40px;
-                background: #667eea;
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 18px;
-                font-weight: 600;
-                transition: all 0.3s;
-            " onmouseover="this.style.background='#764ba2'" onmouseout="this.style.background='#667eea'">
-                🏆 View Your Certificate
-            </a>
-        `;
-        
-        // Insert before modules grid
-        const modulesGrid = document.getElementById('modulesGrid');
-        modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
-    }
+            display: inline-block;
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+        ">
+            🏆 View Your Certificate
+        </a>
+    `;
+    
+    // Insert before modules grid
+    const modulesGrid = document.getElementById('modulesGrid');
+    modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
 }
+        
+       
