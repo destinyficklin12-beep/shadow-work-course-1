@@ -116,20 +116,55 @@ async function saveProgress() {
 }
 
 // Toggle module completion
-async function toggleModule(moduleId) {
-    const index = completedModules.indexOf(moduleId);
-    if (index > -1) {
-        completedModules.splice(index, 1);
-    } else {
-        completedModules.push(moduleId);
-    }
-    await saveProgress();
-    displayModules();
-    updateProgressBar();
+// Navigate to Wix course
+function navigateToModule(moduleId) {
+    // Option A: Open in new tab
+    window.open('https://eclipsoinati.wixsite.com/website/shadow-work-course', '_blank');
+    
+    // Option B: Open in same window (choose one, comment out the other)
+    // window.location.href = 'course.html?module=' + moduleId;
 }
 
 // Display modules
-function displayModules() {
+function displayModules() {function displayModules() {
+    const container = document.getElementById('modulesGrid');
+    container.innerHTML = '';
+
+    // ADD THIS CODE HERE - Certificate banner if all complete
+    if (completedModules.length === 8) {
+        const certBanner = document.createElement('div');
+        certBanner.style.cssText = `
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        `;
+        certBanner.innerHTML = `
+            <h2 style="color: #333; margin-bottom: 10px; font-size: 32px;">🎉 Congratulations! 🎉</h2>
+            <p style="color: #555; font-size: 18px; margin-bottom: 20px;">
+                You've completed all 8 modules of the Shadow Work Course!
+            </p>
+            <a href="certificate.html" style="
+                display: inline-block;
+                padding: 15px 40px;
+                background: #667eea;
+                color: white;
+                text-decoration: none;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: 600;
+            ">
+                🏆 View Your Certificate
+            </a>
+        `;
+        container.parentElement.insertBefore(certBanner, container);
+    }
+    // END OF CERTIFICATE BANNER CODE
+
+    modules.forEach(module => {
+        // ... rest of your existing code continues here
     const container = document.getElementById('modulesGrid');
     container.innerHTML = '';
 
