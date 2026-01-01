@@ -78,7 +78,7 @@ auth.onAuthStateChanged(async (user) => {
     } else {
         window.location.href = 'auth.html';
     }
-}
+})
 
 // Sign out
 document.getElementById('signOutBtn').addEventListener('click', async () => {
