@@ -220,4 +220,50 @@ function updateProgressBar() {
     document.getElementById('progressBar').textContent = percentage + '%';
     document.getElementById('progressText').textContent = 
         `You've completed ${completed} of ${total} modules`;
+    
+    // ADD THIS NEW CODE RIGHT HERE - Check for certificate
+    checkForCertificate();
+}
+
+// NEW FUNCTION - Show certificate banner when all modules complete
+function checkForCertificate() {
+    if (completedModules.length === 8) {
+        // Check if banner already exists
+        if (document.getElementById('certBanner')) return;
+        
+        const certBanner = document.createElement('div');
+        certBanner.id = 'certBanner';
+        certBanner.style.cssText = `
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        `;
+        certBanner.innerHTML = `
+            <h2 style="color: #333; margin-bottom: 10px; font-size: 32px;">🎉 Congratulations! 🎉</h2>
+            <p style="color: #555; font-size: 18px; margin-bottom: 20px;">
+                You've completed all 8 modules of the Shadow Work Course!
+            </p>
+            <a href="certificate.html" style="
+                display: inline-block;
+                padding: 15px 40px;
+                background: #667eea;
+                color: white;
+                text-decoration: none;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: 600;
+                transition: all 0.3s;
+            " onmouseover="this.style.background='#764ba2'" onmouseout="this.style.background='#667eea'">
+                🏆 View Your Certificate
+            </a>
+        `;
+        
+        // Insert before modules grid
+        const modulesGrid = document.getElementById('modulesGrid');
+        modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
+    }
 }
