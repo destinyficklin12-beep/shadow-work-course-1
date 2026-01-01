@@ -78,13 +78,13 @@ auth.onAuthStateChanged(async (user) => {
     } else {
         window.location.href = 'auth.html';
     }
-})
+});
 
 // Sign out
 document.getElementById('signOutBtn').addEventListener('click', async () => {
     await auth.signOut();
     window.location.href = 'index.html';
-}
+});
 
 // Load user progress
 async function loadProgress() {
@@ -109,62 +109,19 @@ async function saveProgress() {
         await db.collection('userProgress').doc(currentUser.uid).set({
             completedModules: completedModules,
             lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        }
+        });
     } catch (error) {
         console.error('Error saving progress:', error);
     }
+}
 
-
-// Toggle module completion
 // Navigate to Wix course
 function navigateToModule(moduleId) {
     window.open('https://eclipsoinati.wixsite.com/website/shadow-work-course', '_blank');
 }
-    
-    // Option B: Open in same window (choose one, comment out the other)
-    // window.location.href = 'course.html?module=' + moduleId;
-}
 
 // Display modules
 function displayModules() {
-    const container = document.getElementById('modulesGrid');
-    container.innerHTML = '';
-
-    // ADD THIS CODE HERE - Certificate banner if all complete
-    if (completedModules.length === 8) {
-        const certBanner = document.createElement('div');
-        certBanner.style.cssText = `
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-        `;
-        certBanner.innerHTML = `
-            <h2 style="color: #333; margin-bottom: 10px; font-size: 32px;">🎉 Congratulations! 🎉</h2>
-            <p style="color: #555; font-size: 18px; margin-bottom: 20px;">
-                You've completed all 8 modules of the Shadow Work Course!
-            </p>
-            <a href="certificate.html" style="
-                display: inline-block;
-                padding: 15px 40px;
-                background: #667eea;
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 18px;
-                font-weight: 600;
-            ">
-                🏆 View Your Certificate
-            </a>
-        `;
-        container.parentElement.insertBefore(certBanner, container);
-    }
-    // END OF CERTIFICATE BANNER CODE
-
-    modules.forEach(module => {
-        // ... rest of your existing code continues here
     const container = document.getElementById('modulesGrid');
     container.innerHTML = '';
 
@@ -176,8 +133,8 @@ function displayModules() {
         moduleCard.className = `module-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}`;
         
         if (!isLocked) {
-    moduleCard.onclick = () => navigateToModule(module.id);
-}
+            moduleCard.onclick = () => navigateToModule(module.id);
+        }
         
         let icon = '📖';
         if (isCompleted) icon = '✅';
@@ -207,7 +164,7 @@ function displayModules() {
         `;
         
         container.appendChild(moduleCard);
-    }
+    });
 }
 
 // Update progress bar
@@ -221,14 +178,12 @@ function updateProgressBar() {
     document.getElementById('progressText').textContent = 
         `You've completed ${completed} of ${total} modules`;
     
-    // ADD THIS NEW CODE RIGHT HERE - Check for certificate
     checkForCertificate();
 }
 
-// NEW FUNCTION - Show certificate banner when all modules complete
+// Show certificate banner when all modules complete
 function checkForCertificate() {
     if (completedModules.length === 8) {
-        // Check if banner already exists
         if (document.getElementById('certBanner')) return;
         
         const certBanner = document.createElement('div');
@@ -240,7 +195,6 @@ function checkForCertificate() {
             text-align: center;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-            animation: slideIn 0.5s ease-out;
         `;
         certBanner.innerHTML = `
             <h2 style="color: #333; margin-bottom: 10px; font-size: 32px;">🎉 Congratulations! 🎉</h2>
@@ -248,23 +202,20 @@ function checkForCertificate() {
                 You've completed all 8 modules of the Shadow Work Course!
             </p>
             <a href="certificate.html" style="
-            display: inline-block;
-            padding: 15px 40px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            transition: all 0.3s;
-        ">
-            🏆 View Your Certificate
-        </a>
-    `;
-    
-    // Insert before modules grid
-    const modulesGrid = document.getElementById('modulesGrid');
-    modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
-}
+                display: inline-block;
+                padding: 15px 40px;
+                background: #667eea;
+                color: white;
+                text-decoration: none;
+                border-radius: 12px;
+                font-size: 18px;
+                font-weight: 600;
+            ">
+                🏆 View Your Certificate
+            </a>
+        `;
         
-       
+        const modulesGrid = document.getElementById('modulesGrid');
+        modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
+    }
+}
