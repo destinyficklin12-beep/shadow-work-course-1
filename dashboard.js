@@ -118,8 +118,8 @@ async function saveProgress() {
 // Toggle module completion
 // Navigate to Wix course
 function navigateToModule(moduleId) {
-    // Option A: Open in new tab
     window.open('https://eclipsoinati.wixsite.com/website/shadow-work-course', '_blank');
+}
     
     // Option B: Open in same window (choose one, comment out the other)
     // window.location.href = 'course.html?module=' + moduleId;
