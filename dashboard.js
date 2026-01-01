@@ -115,9 +115,20 @@ async function saveProgress() {
     }
 }
 
-// Navigate to Wix course
+// Navigate to specific Wix module page
 function navigateToModule(moduleId) {
-    window.open('https://eclipsoinati.wixsite.com/website/shadow-work-course', '_blank');
+    const moduleLinks = {
+        1: 'https://eclipsoinati.wixsite.com/website/module-1-body-awareness',
+        2: 'https://eclipsoinati.wixsite.com/website/module-2-self-compassion',
+        3: 'https://eclipsoinati.wixsite.com/website/module-3-meeting-your-disowned-self',
+        4: 'https://eclipsoinati.wixsite.com/website/module-4-active-imagination',
+        5: 'https://eclipsoinati.wixsite.com/website/module-5-emotional-release',
+        6: 'https://eclipsoinati.wixsite.com/website/module-6-reclaiming-your-power',
+        7: 'https://eclipsoinati.wixsite.com/website/module-7-shadow-in-relationships',
+        8: 'https://eclipsoinati.wixsite.com/website/module-8-integration-wholeness'
+    };
+    
+    window.open(moduleLinks[moduleId], '_blank');
 }
 
 // Display modules
