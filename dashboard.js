@@ -113,7 +113,7 @@ async function saveProgress() {
     } catch (error) {
         console.error('Error saving progress:', error);
     }
-}
+
 
 // Toggle module completion
 // Navigate to Wix course
