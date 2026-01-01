@@ -176,8 +176,8 @@ function displayModules() {function displayModules() {
         moduleCard.className = `module-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}`;
         
         if (!isLocked) {
-            moduleCard.onclick = () => toggleModule(module.id);
-        }
+    moduleCard.onclick = () => navigateToModule(module.id);
+}
         
         let icon = '📖';
         if (isCompleted) icon = '✅';
