@@ -126,7 +126,7 @@ function navigateToModule(moduleId) {
 }
 
 // Display modules
-function displayModules() {function displayModules() {
+function displayModules() {
     const container = document.getElementById('modulesGrid');
     container.innerHTML = '';
 
