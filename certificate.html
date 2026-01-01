@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Completion - Shadow Work Course</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 900px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .certificate {
+            border: 15px solid #667eea;
+            padding: 60px 40px;
+            text-align: center;
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9ff 100%);
+            border-radius: 10px;
+            position: relative;
+        }
+        .certificate::before,
+        .certificate::after {
+            content: '🌙';
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.2;
+        }
+        .certificate::before {
+            top: 20px;
+            left: 20px;
+        }
+        .certificate::after {
+            content: '☀️';
+            bottom: 20px;
+            right: 20px;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .header-icons {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            font-size: 24px;
+            color: #764ba2;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        .completion-text {
+            font-size: 20px;
+            color: #555;
+            margin: 20px 0;
+        }
+        .name-container {
+            margin: 40px 0;
+            padding: 20px 0;
+            border-top: 3px solid #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .name {
+            font-size: 42px;
+            color: #333;
+            font-weight: bold;
+            margin: 10px 0;
+            font-family: 'Brush Script MT', cursive, Georgia, serif;
+        }
+        .achievement-text {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            padding-top: 30px;
+        }
+        .signature {
+            text-align: center;
+        }
+        .signature-line {
+            width: 200px;
+            height: 2px;
+            background: #333;
+            margin: 0 auto 10px;
+        }
+        .signature-title {
+            font-size: 14px;
+            color: #666;
+            font-family: Arial, sans-serif;
+        }
+        .date {
+            font-size: 16px;
+            color: #666;
+            margin-top: 30px;
+        }
+        .quote {
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+        }
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            .buttons {
+                display: none;
+            }
+        }
+        @media (max-width: 768px) {
+            .certificate {
+                padding: 40px 20px;
+            }
+            h1 {
+                font-size: 36px;
+            }
+            .name {
+                font-size: 32px;
+            }
+            .subtitle {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="certificate">
+            <div class="header">
+                <div class="header-icons">🌙 ❤️ ☀️</div>
+                <h1>Certificate of Completion</h1>
+                <div class="subtitle">Shadow Work Journey</div>
+            </div>
+            
+            <div class="completion-text">This certifies that</div>
+            
+            <div class="name-container">
+                <div class="name" id="userName">Loading...</div>
+            </div>
+            
+            <div class="achievement-badge">✨ 8-Week Program Complete ✨</div>
+            
+            <div class="achievement-text">
+                has successfully completed the comprehensive 8-week Shadow Work Course,
+                demonstrating courage, commitment, and dedication to personal growth,
+                self-integration, and the journey toward wholeness.
+            </div>
+            
+            <div class="achievement-text" style="font-size: 16px; margin-top: 20px;">
+                Through deep inner work, meditation practice, and honest self-reflection,
+                this individual has embraced their shadow, reclaimed disowned parts,
+                and taken significant steps toward authentic self-expression.
+            </div>
+            
+            <div class="signature-section">
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-title">Course Instructor</div>
+                    <div class="signature-title">Shadow Work Course</div>
+                </div>
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-title" id="completionDate">Date</div>
+                </div>
+            </div>
+            
+            <div class="quote">
+                "One does not become enlightened by imagining figures of light,<br>
+                but by making the darkness conscious." — Carl Jung
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="window.print()">
+                🖨️ Download Certificate
+            </button>
+            <button class="btn btn-primary" onclick="shareOnSocial()">
+                📱 Share Achievement
+            </button>
+            <a href="dashboard.html" class="btn btn-secondary">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase Config -->
+    <script src="./firebase-config.js"></script>
+    
+    <script>
+        // Check authentication and verify completion
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                alert('Please sign in to view your certificate');
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            // Check if user has completed all 8 modules
+            try {
+                const docRef = db.collection('userProgress').doc(user.uid);
+                const doc = await docRef.get();
+                
+                if (!doc.exists) {
+                    alert('No progress found. Please complete the course first!');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+                
+                const completedModules = doc.data().completedModules || [];
+                
+                if (completedModules.length < 8) {
+                    alert(`You've completed ${completedModules.length} of 8 modules. Complete all modules to unlock your certificate!`);
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+                
+                // Display certificate
+                document.getElementById('userName').textContent = user.displayName || user.email;
+                
+                // Set completion date
+                const today = new Date();
+                const dateString = today.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                document.getElementById('completionDate').textContent = dateString;
+                
+                // Save certificate issuance to Firestore
+                await db.collection('userProgress').doc(user.uid).update({
+                    certificateIssued: true,
+                    certificateDate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+            } catch (error) {
+                console.error('Error verifying completion:', error);
+                alert('Error loading certificate. Please try again.');
+            }
+        });
+
+        // Share on social media
+        function shareOnSocial() {
+            const text = "I just completed the 8-week Shadow Work Course! 🌙✨ #ShadowWork #PersonalGrowth #SelfDiscovery";
+            const url = window.location.href;
+            
+            // Check if Web Share API is available (mobile)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Shadow Work Certificate',
+                    text: text,
+                    url: url
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback: Copy to clipboard
+                const shareText = `${text}\n\nView my certificate: ${url}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Achievement text copied to clipboard! You can now paste it to share on social media.');
+                }).catch(() => {
+                    alert('Share this achievement:\n\n' + shareText);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
