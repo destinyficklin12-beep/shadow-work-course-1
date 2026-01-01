@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Content - Shadow Work</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+        .header h2 {
+            color: #667eea;
+            font-size: 20px;
+            font-weight: 300;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .back-btn:hover {
+            background: #764ba2;
+        }
+        .user-info {
+            color: #666;
+            font-size: 14px;
+        }
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+        }
+        iframe {
+            width: 100%;
+            height: calc(100vh - 60px);
+            border: none;
+            margin-top: 60px;
+        }
+        .progress-tracker {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        .progress-tracker h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .progress-tracker p {
+            color: #666;
+            font-size: 12px;
+        }
+        .module-complete-btn {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
+        .module-complete-btn:hover {
+            background: #764ba2;
+        }
+        .module-complete-btn.completed {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="dashboard.html" class="back-btn">← Dashboard</a>
+        <h2>🌙 Shadow Work Course</h2>
+        <div class="user-info" id="userInfo">Loading...</div>
+    </div>
+    
+    <div class="loading" id="loading">Loading course content...</div>
+    
+    <iframe 
+        id="courseFrame"
+        src="https://eclipsoinati.wixsite.com/website/shadow-work-course"
+        style="display: none;"
+        onload="document.getElementById('loading').style.display='none'; this.style.display='block';">
+    </iframe>
+
+    <!-- Progress Tracker Widget -->
+    <div class="progress-tracker" id="progressTracker" style="display: none;">
+        <h4>Your Progress</h4>
+        <p id="progressText">0 of 8 modules completed</p>
+        <button class="module-complete-btn" id="completeBtn" onclick="markCurrentModuleComplete()">
+            Mark Current Module Complete
+        </button>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Your Firebase Config -->
+    <script src="./firebase-config.js"></script>
+    
+    <script>
+        let currentUser = null;
+        let completedModules = [];
+        let currentModuleId = 1;
+
+        // Get module ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const moduleParam = urlParams.get('module');
+        if (moduleParam) {
+            currentModuleId = parseInt(moduleParam);
+        }
+
+        // Check authentication
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            currentUser = user;
+            document.getElementById('userInfo').textContent = user.displayName || user.email;
+            
+            await loadProgress();
+            document.getElementById('progressTracker').style.display = 'block';
+        });
+
+        // Load user progress
+        async function loadProgress() {
+            try {
+                const docRef = db.collection('userProgress').doc(currentUser.uid);
+                const doc = await docRef.get();
+                
+                if (doc.exists) {
+                    completedModules = doc.data().completedModules || [];
+                } else {
+                    completedModules = [];
+                }
+                
+                updateProgressDisplay();
+            } catch (error) {
+                console.error('Error loading progress:', error);
+            }
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            const completed = completedModules.length;
+            document.getElementById('progressText').textContent = 
+                `${completed} of 8 modules completed`;
+            
+            const btn = document.getElementById('completeBtn');
+            if (completedModules.includes(currentModuleId)) {
+                btn.textContent = '✓ Module Completed';
+                btn.classList.add('completed');
+            } else {
+                btn.textContent = 'Mark Module ' + currentModuleId + ' Complete';
+                btn.classList.remove('completed');
+            }
+        }
+
+        // Mark current module as complete
+        async function markCurrentModuleComplete() {
+            if (completedModules.includes(currentModuleId)) {
+                alert('This module is already marked as complete!');
+                return;
+            }
+            
+            try {
+                completedModules.push(currentModuleId);
+                
+                await db.collection('userProgress').doc(currentUser.uid).set({
+                    completedModules: completedModules,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                updateProgressDisplay();
+                alert('🎉 Module ' + currentModuleId + ' completed!');
+                
+                // Check if all modules complete
+                if (completedModules.length === 8) {
+                    if (confirm('Congratulations! You completed all modules! View your certificate?')) {
+                        window.location.href = 'certificate.html';
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error saving progress. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
