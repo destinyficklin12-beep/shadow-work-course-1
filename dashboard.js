@@ -115,6 +115,19 @@ async function saveProgress() {
     }
 }
 
+// Toggle module completion
+async function toggleModule(moduleId) {
+    const index = completedModules.indexOf(moduleId);
+    if (index > -1) {
+        completedModules.splice(index, 1);
+    } else {
+        completedModules.push(moduleId);
+    }
+    await saveProgress();
+    displayModules();
+    updateProgressBar();
+}
+
 // Navigate to specific Wix module page
 function navigateToModule(moduleId) {
     const moduleLinks = {
@@ -144,6 +157,11 @@ function displayModules() {
         moduleCard.className = `module-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}`;
         
         if (!isLocked) {
+            // Right-click to toggle, left-click to navigate
+            moduleCard.oncontextmenu = (e) => {
+                e.preventDefault();
+                toggleModule(module.id);
+            };
             moduleCard.onclick = () => navigateToModule(module.id);
         }
         
@@ -170,6 +188,10 @@ function displayModules() {
             }
             ${isLocked ? 
                 `<p class="lock-message">Complete Module ${module.id - 1} to unlock</p>` : 
+                ''
+            }
+            ${!isLocked && !isCompleted ?
+                `<p class="lock-message" style="color: #667eea;">Right-click to mark complete</p>` :
                 ''
             }
         `;
