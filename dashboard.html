@@ -4,27 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Shadow Work Course</title>
-   <link rel="stylesheet" href="./dashboard.css">
+    <link rel="stylesheet" href="./dashboard.css">
 </head>
 <body>
     <!-- Header -->
-    <div class="header-content">
-    <div class="logo">
-        <span class="icon">❤️</span>
-        <div>
-            <h1>Shadow Work Course</h1>
-            <p class="user-email" id="userEmail">Loading...</p>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="icon">❤️</span>
+                <div>
+                    <h1>Shadow Work Course</h1>
+                    <p class="user-email" id="userEmail">Loading...</p>
+                </div>
+            </div>
+            
+            <!-- Access Course Content Button -->
+            <a href="course.html" style="padding: 12px 24px; background: #4caf50; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-right: 10px;">
+                📚 Access Course Content
+            </a>
+            
+            <!-- Sign Out Button -->
+            <button class="sign-out-btn" id="signOutBtn">Sign Out</button>
         </div>
     </div>
-    
-    <!-- ADD THIS: Access Course Content Button -->
-    <a href="course.html" style="padding: 12px 24px; background: #4caf50; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-right: 10px;">
-        📚 Access Course Content
-    </a>
-    
-    <!-- ADD THIS: Sign Out Button -->
-    <button class="sign-out-btn" id="signOutBtn">Sign Out</button>
-</div>
+
     <!-- Main Content -->
     <div class="dashboard">
         <!-- Progress Section -->
@@ -48,5 +51,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
     <!-- Your Firebase Config -->
-    <link rel="stylesheet" href="./dashboard.css">
+    <script src="./firebase-config.js"></script>
+    <script src="./dashboard.js"></script>
+</body>
 </html>
