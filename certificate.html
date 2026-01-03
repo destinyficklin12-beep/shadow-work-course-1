@@ -413,13 +413,8 @@
         }
 
         function downloadCertificate() {
-            // Show helpful message
-            alert('📄 To download your certificate:\n\n1. A print dialog will open\n2. Choose "Save as PDF" or "Microsoft Print to PDF"\n3. Click Save\n\nYour certificate will be saved as a PDF!');
-            
-            // Trigger browser print dialog
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            // Simple print function - works everywhere
+            window.print();
         }
     </script>
 </body>
