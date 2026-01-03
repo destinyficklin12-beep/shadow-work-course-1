@@ -1,254 +1,88 @@
+// Dashboard JavaScript
 const modules = [
-    {
-        id: 1,
-        title: 'Understanding the Shadow',
-        duration: '45 min',
-        lessons: 4,
-        meditation: 'Body Awareness (10 min)',
-        description: 'Discover what the shadow is, how it forms, and why exploring it matters.'
-    },
-    {
-        id: 2,
-        title: 'Preparing for Shadow Work',
-        duration: '40 min',
-        lessons: 4,
-        meditation: 'Self-Compassion Practice (12 min)',
-        description: 'Create safety, develop self-compassion, and build grounding practices.'
-    },
-    {
-        id: 3,
-        title: 'Identifying Your Shadow',
-        duration: '50 min',
-        lessons: 4,
-        meditation: 'Meeting Your Disowned Self (15 min)',
-        description: 'Use projection, triggers, and patterns to discover your shadow aspects.'
-    },
-    {
-        id: 4,
-        title: 'Dialoguing with the Shadow',
-        duration: '55 min',
-        lessons: 4,
-        meditation: 'Active Imagination Journey (18 min)',
-        description: 'Learn techniques for communicating with your shadow parts.'
-    },
-    {
-        id: 5,
-        title: 'Feeling the Shadow',
-        duration: '60 min',
-        lessons: 4,
-        meditation: 'Emotional Release & Integration (20 min)',
-        description: 'Process difficult emotions safely and release stored energy.'
-    },
-    {
-        id: 6,
-        title: 'Reclaiming Your Power',
-        duration: '50 min',
-        lessons: 4,
-        meditation: 'Reclaiming Your Power (16 min)',
-        description: 'Retrieve lost parts and reclaim disowned strengths and gifts.'
-    },
-    {
-        id: 7,
-        title: 'Shadow Work in Relationships',
-        duration: '45 min',
-        lessons: 4,
-        meditation: 'None (practical exercises)',
-        description: 'Transform relationship dynamics through shadow awareness.'
-    },
-    {
-        id: 8,
-        title: 'Integration and Wholeness',
-        duration: '50 min',
-        lessons: 4,
-        meditation: 'Integration & Wholeness (17 min)',
-        description: 'Create a sustainable practice and live from wholeness.'
-    }
+    { id: 1, title: "Body Awareness", description: "Connect with physical sensations and tensions" },
+    { id: 2, title: "Emotional Mapping", description: "Identify and understand your emotions" },
+    { id: 3, title: "Childhood Patterns", description: "Explore early life experiences" },
+    { id: 4, title: "Fear & Resistance", description: "Face what you've been avoiding" },
+    { id: 5, title: "Shame & Guilt", description: "Release toxic emotions" },
+    { id: 6, title: "Anger & Boundaries", description: "Reclaim your power" },
+    { id: 7, title: "Integration", description: "Bringing shadow into light" },
+    { id: 8, title: "Wholeness", description: "Embracing your complete self" }
 ];
-
-let currentUser = null;
-let completedModules = [];
 
 // Check authentication
 auth.onAuthStateChanged(async (user) => {
-    if (user) {
-        currentUser = user;
-        document.getElementById('userEmail').textContent = `Welcome, ${user.displayName || user.email}`;
-        await loadProgress();
-        displayModules();
-    } else {
-        window.location.href = 'auth.html';
+    if (!user) {
+        window.location.href = 'index.html';
+        return;
     }
+    
+    // Display user email
+    document.getElementById('userEmail').textContent = user.email;
+    
+    // Load user progress
+    await loadUserProgress(user.uid);
 });
 
-// Sign out
-document.getElementById('signOutBtn').addEventListener('click', async () => {
-    await auth.signOut();
-    window.location.href = 'index.html';
-});
-
-// Load user progress
-async function loadProgress() {
+// Load user progress from Firestore
+async function loadUserProgress(userId) {
     try {
-        const docRef = db.collection('userProgress').doc(currentUser.uid);
+        const docRef = db.collection('userProgress').doc(userId);
         const doc = await docRef.get();
         
-        if (doc.exists) {
-            completedModules = doc.data().completedModules || [];
-        } else {
-            completedModules = [];
+        let completedModules = [];
+        if (doc.exists && doc.data().completedModules) {
+            completedModules = doc.data().completedModules;
         }
-        updateProgressBar();
+        
+        // Update progress bar
+        const progress = (completedModules.length / modules.length) * 100;
+        document.getElementById('progressBar').style.width = progress + '%';
+        document.getElementById('progressBar').textContent = Math.round(progress) + '%';
+        document.getElementById('progressText').textContent = 
+            `You've completed ${completedModules.length} of ${modules.length} modules`;
+        
+        // Render modules
+        renderModules(completedModules);
     } catch (error) {
         console.error('Error loading progress:', error);
+        renderModules([]);
     }
 }
 
-// Save progress
-async function saveProgress() {
-    try {
-        await db.collection('userProgress').doc(currentUser.uid).set({
-            completedModules: completedModules,
-            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } catch (error) {
-        console.error('Error saving progress:', error);
-    }
-}
-
-// Toggle module completion
-async function toggleModule(moduleId) {
-    const index = completedModules.indexOf(moduleId);
-    if (index > -1) {
-        completedModules.splice(index, 1);
-    } else {
-        completedModules.push(moduleId);
-    }
-    await saveProgress();
-    displayModules();
-    updateProgressBar();
-}
-
-// Navigate to specific Wix module page
-function navigateToModule(moduleId) {
-    const moduleLinks = {
-        1: 'https://eclipsoinati.wixsite.com/website/module-1-body-awareness',
-        2: 'https://eclipsoinati.wixsite.com/website/module-2-self-compassion',
-        3: 'https://eclipsoinati.wixsite.com/website/module-3-meeting-your-disowned-self',
-        4: 'https://eclipsoinati.wixsite.com/website/module-4-active-imagination',
-        5: 'https://eclipsoinati.wixsite.com/website/module-5-emotional-release',
-        6: 'https://eclipsoinati.wixsite.com/website/module-6-reclaiming-your-power',
-        7: 'https://eclipsoinati.wixsite.com/website/module-7-shadow-in-relationships',
-        8: 'https://eclipsoinati.wixsite.com/website/module-8-integration-wholeness'
-    };
+// Render module cards
+function renderModules(completedModules) {
+    const grid = document.getElementById('modulesGrid');
+    grid.innerHTML = '';
     
-    window.open(moduleLinks[moduleId], '_blank');
-}
-
-// Display modules
-function displayModules() {
-    const container = document.getElementById('modulesGrid');
-    container.innerHTML = '';
-
     modules.forEach(module => {
         const isCompleted = completedModules.includes(module.id);
-        const isLocked = module.id > 1 && !completedModules.includes(module.id - 1);
+        const card = document.createElement('div');
+        card.className = `module-card ${isCompleted ? 'completed' : ''}`;
         
-        const moduleCard = document.createElement('div');
-        moduleCard.className = `module-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}`;
+        // Make card clickable to go to course with module parameter
+        card.style.cursor = 'pointer';
+        card.onclick = () => {
+            window.location.href = `course.html?module=${module.id}`;
+        };
         
-        if (!isLocked) {
-            // Right-click to toggle, left-click to navigate
-            moduleCard.oncontextmenu = (e) => {
-                e.preventDefault();
-                toggleModule(module.id);
-            };
-            moduleCard.onclick = () => navigateToModule(module.id);
-        }
-        
-        let icon = '📖';
-        if (isCompleted) icon = '✅';
-        if (isLocked) icon = '🔒';
-        
-        moduleCard.innerHTML = `
-            <div class="module-header">
-                <div class="module-icon">${icon}</div>
-                <div class="module-info">
-                    <h3>${module.title}</h3>
-                    <p class="module-number">Module ${module.id}</p>
-                </div>
-            </div>
-            <p class="module-description">${module.description}</p>
-            <div class="module-meta">
-                <span>⏱️ ${module.duration}</span>
-                <span>📚 ${module.lessons} lessons</span>
-            </div>
-            ${module.meditation !== 'None (practical exercises)' ? 
-                `<div class="module-meditation">▶️ ${module.meditation}</div>` : 
-                '<div class="module-meditation">✍️ Practical exercises</div>'
-            }
-            ${isLocked ? 
-                `<p class="lock-message">Complete Module ${module.id - 1} to unlock</p>` : 
-                ''
-            }
-            ${!isLocked && !isCompleted ?
-                `<p class="lock-message" style="color: #667eea;">Right-click to mark complete</p>` :
-                ''
-            }
+        card.innerHTML = `
+            <div class="module-number">Module ${module.id}</div>
+            <h3>${module.title}</h3>
+            <p>${module.description}</p>
+            ${isCompleted ? '<div class="completed-badge">✓ Completed</div>' : ''}
         `;
-        
-        container.appendChild(moduleCard);
+        grid.appendChild(card);
     });
 }
 
-// Update progress bar
-function updateProgressBar() {
-    const completed = completedModules.length;
-    const total = modules.length;
-    const percentage = Math.round((completed / total) * 100);
-    
-    document.getElementById('progressBar').style.width = percentage + '%';
-    document.getElementById('progressBar').textContent = percentage + '%';
-    document.getElementById('progressText').textContent = 
-        `You've completed ${completed} of ${total} modules`;
-    
-    checkForCertificate();
-}
-
-// Show certificate banner when all modules complete
-function checkForCertificate() {
-    if (completedModules.length === 8) {
-        if (document.getElementById('certBanner')) return;
-        
-        const certBanner = document.createElement('div');
-        certBanner.id = 'certBanner';
-        certBanner.style.cssText = `
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-        `;
-        certBanner.innerHTML = `
-            <h2 style="color: #333; margin-bottom: 10px; font-size: 32px;">🎉 Congratulations! 🎉</h2>
-            <p style="color: #555; font-size: 18px; margin-bottom: 20px;">
-                You've completed all 8 modules of the Shadow Work Course!
-            </p>
-            <a href="certificate.html" style="
-                display: inline-block;
-                padding: 15px 40px;
-                background: #667eea;
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 18px;
-                font-weight: 600;
-            ">
-                🏆 View Your Certificate
-            </a>
-        `;
-        
-        const modulesGrid = document.getElementById('modulesGrid');
-        modulesGrid.parentElement.insertBefore(certBanner, modulesGrid);
+// Sign out functionality
+document.getElementById('signOutBtn').addEventListener('click', async () => {
+    try {
+        await auth.signOut();
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Error signing out:', error);
+        alert('Error signing out. Please try again.');
     }
-}
+});
