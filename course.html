@@ -27,7 +27,12 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            height: 60px;
+            height: 70px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
         .header h2 {
             color: #667eea;
@@ -61,52 +66,92 @@
         }
         iframe {
             width: 100%;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 70px);
             border: none;
-            margin-top: 60px;
+            margin-top: 70px;
         }
+        
+        /* Enhanced Progress Tracker - More Prominent */
         .progress-tracker {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            top: 70px;
+            right: 0;
             background: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
+            padding: 20px 25px;
+            border-radius: 12px 0 0 12px;
+            box-shadow: -4px 4px 20px rgba(0,0,0,0.2);
+            z-index: 1001;
+            min-width: 280px;
+            border-left: 4px solid #667eea;
         }
         .progress-tracker h4 {
             color: #667eea;
-            margin-bottom: 5px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .progress-tracker p {
             color: #666;
-            font-size: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .module-info {
+            background: #f8f9ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 600;
         }
         .module-complete-btn {
-            margin-top: 10px;
-            padding: 8px 16px;
-            background: #667eea;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 600;
             width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
         .module-complete-btn:hover {
-            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
         .module-complete-btn.completed {
             background: #4caf50;
+            cursor: default;
+        }
+        .module-complete-btn.completed:hover {
+            transform: none;
+        }
+        .progress-bar-mini {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <a href="dashboard.html" class="back-btn">← Dashboard</a>
-        <h2>🌙 Shadow Work Course</h2>
+        <div class="header-left">
+            <a href="dashboard.html" class="back-btn">← Dashboard</a>
+            <h2>🌙 Shadow Work Course</h2>
+        </div>
         <div class="user-info" id="userInfo">Loading...</div>
     </div>
     
@@ -119,12 +164,16 @@
         onload="document.getElementById('loading').style.display='none'; this.style.display='block';">
     </iframe>
 
-    <!-- Progress Tracker Widget -->
+    <!-- Enhanced Progress Tracker Widget -->
     <div class="progress-tracker" id="progressTracker" style="display: none;">
-        <h4>Your Progress</h4>
+        <h4>📊 Your Progress</h4>
         <p id="progressText">0 of 8 modules completed</p>
+        <div class="progress-bar-mini">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+        </div>
+        <div class="module-info" id="moduleInfo">Current: Module 1</div>
         <button class="module-complete-btn" id="completeBtn" onclick="markCurrentModuleComplete()">
-            Mark Current Module Complete
+            ✓ Mark Module Complete
         </button>
     </div>
 
@@ -183,23 +232,35 @@
         // Update progress display
         function updateProgressDisplay() {
             const completed = completedModules.length;
+            const progressPercent = (completed / 8) * 100;
+            
             document.getElementById('progressText').textContent = 
                 `${completed} of 8 modules completed`;
             
+            document.getElementById('progressBarFill').style.width = progressPercent + '%';
+            
+            document.getElementById('moduleInfo').textContent = 
+                `Current: Module ${currentModuleId}`;
+            
             const btn = document.getElementById('completeBtn');
             if (completedModules.includes(currentModuleId)) {
-                btn.textContent = '✓ Module Completed';
+                btn.textContent = '✓ Module ' + currentModuleId + ' Completed';
                 btn.classList.add('completed');
+                btn.disabled = true;
             } else {
-                btn.textContent = 'Mark Module ' + currentModuleId + ' Complete';
+                btn.textContent = '✓ Mark Module ' + currentModuleId + ' Complete';
                 btn.classList.remove('completed');
+                btn.disabled = false;
             }
         }
 
         // Mark current module as complete
         async function markCurrentModuleComplete() {
             if (completedModules.includes(currentModuleId)) {
-                alert('This module is already marked as complete!');
+                return;
+            }
+            
+            if (!confirm('Mark Module ' + currentModuleId + ' as complete?')) {
                 return;
             }
             
@@ -212,12 +273,19 @@
                 });
                 
                 updateProgressDisplay();
-                alert('🎉 Module ' + currentModuleId + ' completed!');
+                
+                // Show success message
+                alert('🎉 Congratulations! Module ' + currentModuleId + ' completed!');
                 
                 // Check if all modules complete
                 if (completedModules.length === 8) {
-                    if (confirm('Congratulations! You completed all modules! View your certificate?')) {
+                    if (confirm('🎊 Amazing! You completed ALL modules! View your certificate?')) {
                         window.location.href = 'certificate.html';
+                    }
+                } else {
+                    // Suggest next module
+                    if (confirm('Great work! Ready to continue to the next module?')) {
+                        window.location.href = 'dashboard.html';
                     }
                 }
             } catch (error) {
