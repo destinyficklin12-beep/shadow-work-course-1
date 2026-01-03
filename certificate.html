@@ -106,6 +106,7 @@
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+            pointer-events: none;
         }
         .btn-secondary {
             background: white;
@@ -292,7 +293,7 @@
             </div>
 
             <div class="download-section">
-                <button onclick="downloadCertificate()" class="btn btn-primary" id="downloadBtn">📥 Download Certificate</button>
+                <button onclick="printCertificate()" class="btn btn-primary" id="downloadBtn">📥 Download Certificate</button>
                 <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
             </div>
         </div>
@@ -412,9 +413,17 @@
             }
         }
 
+        function printCertificate() {
+            try {
+                window.print();
+            } catch (error) {
+                alert('Please use Ctrl+P (Windows) or Cmd+P (Mac) to print your certificate.');
+            }
+        }
+        
+        // Also make it work with the old function name just in case
         function downloadCertificate() {
-            // Simple print function - works everywhere
-            window.print();
+            printCertificate();
         }
     </script>
 </body>
