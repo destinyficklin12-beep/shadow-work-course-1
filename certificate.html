@@ -91,6 +91,8 @@
             text-decoration: none;
             transition: all 0.3s;
             margin: 10px;
+            border: none;
+            cursor: pointer;
         }
         .btn-primary {
             background: #4caf50;
@@ -100,6 +102,11 @@
             background: #45a049;
             transform: translateY(-2px);
         }
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
         .btn-secondary {
             background: white;
             color: #667eea;
@@ -107,12 +114,6 @@
         .btn-secondary:hover {
             background: #f8f9ff;
             transform: translateY(-2px);
-        }
-        .btn:disabled {
-            background: #ccc;
-            color: #666;
-            cursor: not-allowed;
-            transform: none;
         }
         .certificate-preview {
             background: white;
@@ -182,9 +183,15 @@
             width: 200px;
             margin-bottom: 10px;
         }
+        .signature-line div:nth-child(2) {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
         .signature-line div:last-child {
-            font-size: 14px;
-            color: #666;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
         }
         .download-section {
             text-align: center;
@@ -192,6 +199,33 @@
         }
         .hidden {
             display: none;
+        }
+        @media print {
+            body {
+                background: white !important;
+            }
+            body * {
+                visibility: hidden;
+            }
+            .certificate-preview, .certificate-preview * {
+                visibility: visible;
+            }
+            .certificate-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+            }
+            .download-section {
+                display: none !important;
+            }
+            .header {
+                display: none !important;
+            }
+            .container {
+                padding: 0 !important;
+            }
         }
     </style>
 </head>
@@ -245,24 +279,28 @@
             <div class="cert-date" id="certDate">Completed on: January 1, 2025</div>
             
             <div class="cert-signature">
-    <div class="signature-line">
-        <div></div>
-        <div>Eclipsoinati</div>
-        <div style="font-size: 12px; color: #999; margin-top: 5px;">Course Instructor</div>
-    </div>
-    <div class="signature-line">
-        <div></div>
-        <div>Eclipsoinati</div>
-        <div style="font-size: 12px; color: #999; margin-top: 5px;">Program Director</div>
-    </div>
-</div>
+                <div class="signature-line">
+                    <div></div>
+                    <div>Eclipsoinati</div>
+                    <div>Course Instructor</div>
+                </div>
+                <div class="signature-line">
+                    <div></div>
+                    <div>Eclipsoinati</div>
+                    <div>Program Director</div>
+                </div>
+            </div>
 
             <div class="download-section">
-                <button onclick="downloadCertificate()" class="btn btn-primary">📥 Download Certificate</button>
+                <button onclick="downloadCertificate()" class="btn btn-primary" id="downloadBtn">📥 Download Certificate</button>
                 <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
             </div>
         </div>
     </div>
+
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -378,34 +416,56 @@
             }
         }
 
-        function downloadCertificate() {
-            // For now, use browser print function
-            // You could integrate with a PDF generation library for more advanced functionality
-            window.print();
-        }
-
-        // Print styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @media print {
-                body * {
-                    visibility: hidden;
-                }
-                .certificate-preview, .certificate-preview * {
-                    visibility: visible;
-                }
-                .certificate-preview {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                }
-                .download-section {
-                    display: none !important;
-                }
+        async function downloadCertificate() {
+            const certificateElement = document.getElementById('certificatePreview');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // Show loading state
+            downloadBtn.textContent = '⏳ Generating PDF...';
+            downloadBtn.disabled = true;
+            
+            try {
+                // Hide the download buttons temporarily
+                const downloadSection = document.querySelector('.download-section');
+                downloadSection.style.display = 'none';
+                
+                // Capture the certificate as canvas
+                const canvas = await html2canvas(certificateElement, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    windowWidth: 1200,
+                    windowHeight: 900
+                });
+                
+                // Show buttons again
+                downloadSection.style.display = 'block';
+                
+                // Convert to PDF
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                
+                // Download the PDF
+                const userName = currentUser.displayName || currentUser.email.split('@')[0];
+                pdf.save(`Shadow-Work-Certificate-${userName}.pdf`);
+                
+                // Reset button
+                downloadBtn.textContent = '📥 Download Certificate';
+                downloadBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Error generating certificate:', error);
+                alert('Error generating certificate. Please try again.');
+                downloadBtn.textContent = '📥 Download Certificate';
+                downloadBtn.disabled = false;
             }
-        `;
-        document.head.appendChild(style);
+        }
     </script>
 </body>
 </html>
