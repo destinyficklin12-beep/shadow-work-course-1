@@ -298,10 +298,6 @@
         </div>
     </div>
 
-    <!-- PDF Generation Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -416,55 +412,14 @@
             }
         }
 
-        async function downloadCertificate() {
-            const certificateElement = document.getElementById('certificatePreview');
-            const downloadBtn = document.getElementById('downloadBtn');
+        function downloadCertificate() {
+            // Show helpful message
+            alert('📄 To download your certificate:\n\n1. A print dialog will open\n2. Choose "Save as PDF" or "Microsoft Print to PDF"\n3. Click Save\n\nYour certificate will be saved as a PDF!');
             
-            // Show loading state
-            downloadBtn.textContent = '⏳ Generating PDF...';
-            downloadBtn.disabled = true;
-            
-            try {
-                // Hide the download buttons temporarily
-                const downloadSection = document.querySelector('.download-section');
-                downloadSection.style.display = 'none';
-                
-                // Capture the certificate as canvas
-                const canvas = await html2canvas(certificateElement, {
-                    scale: 2,
-                    backgroundColor: '#ffffff',
-                    logging: false,
-                    windowWidth: 1200,
-                    windowHeight: 900
-                });
-                
-                // Show buttons again
-                downloadSection.style.display = 'block';
-                
-                // Convert to PDF
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jspdf.jsPDF({
-                    orientation: 'landscape',
-                    unit: 'px',
-                    format: [canvas.width, canvas.height]
-                });
-                
-                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                
-                // Download the PDF
-                const userName = currentUser.displayName || currentUser.email.split('@')[0];
-                pdf.save(`Shadow-Work-Certificate-${userName}.pdf`);
-                
-                // Reset button
-                downloadBtn.textContent = '📥 Download Certificate';
-                downloadBtn.disabled = false;
-                
-            } catch (error) {
-                console.error('Error generating certificate:', error);
-                alert('Error generating certificate. Please try again.');
-                downloadBtn.textContent = '📥 Download Certificate';
-                downloadBtn.disabled = false;
-            }
+            // Trigger browser print dialog
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
     </script>
 </body>
